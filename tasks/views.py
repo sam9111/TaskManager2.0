@@ -14,7 +14,8 @@ def tasks_view(request):
 
 def add_task_view(request):
     task_value = request.GET.get("task")
-    task_obj = Task(title=task_value)
+    task_description = request.GET.get("description")
+    task_obj = Task(title=task_value, description=task_description)
     task_obj.save()
     return HttpResponseRedirect("/tasks/")
 
