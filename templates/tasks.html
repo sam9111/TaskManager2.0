@@ -5,13 +5,26 @@
 <h1>Tasks Manager</h1>
 
 <form method="get" action="/add-task/">
-    <input type="text" name="task"/>
+    <input type="text" name="task" />
     <button type="submit">Add Task</button>
 </form>
 
-<h2>Pending Tasks</h2>
-{% for task in tasks %}
-{{forloop.counter}} . {{task}} 
-<a href="/complete_task/{{forloop.counter}}/">Complete</a>
-<a href="/delete-task/{{forloop.counter}}/">Delete</a></br>
+<form method="get" action="">
+    <input type="text" name="search" />
+    <button type="submit">Search</button>
+</form>
+
+<div>
+    <h2>Pending Tasks</h2>
+    {% for task in tasks %}
+
+    <div>
+        {{task.id}}.{{task.title}}
+        {{task.created_date}}
+        <br />
+        {{task.description}}
+    </div>
+</div>
+<a href="/complete_task/{{task.id}}/">Complete</a>
+<a href="/delete-task/{{task.id}}/">Delete</a></br>
 {% endfor %}
