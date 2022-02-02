@@ -1,0 +1,7 @@
+<a href="/tasks/">Back to Tasks</a>
+
+<h1>Completed Tasks</h1>
+
+{% for task in completed_tasks %}
+{{forloop.counter}} . {{task}}<br/>
+{% endfor %}
