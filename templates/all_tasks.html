@@ -1,16 +1,25 @@
 <a href="/tasks/">Back to Tasks</a>
 <div>
-<h1>Pending Tasks</h1>
+    <div>
+        <h2>Pending Tasks</h2>
+        {% for task in tasks %}
 
-{% for task in tasks %}
-{{forloop.counter}} . {{task}}<br />
-{% endfor %}
+        <div>
+            {{task.id}} . {{task.title}} - {{task.created_date}}
+            <br />
+            {{task.description}}
+        </div>
+        {% endfor %}
+    </div>
+    <div>
+        <h1>Completed Tasks</h1>
+        {% for task in completed_tasks %}
+
+        <div>
+            {{task.id}} . {{task.title}} - {{task.created_date}}
+            <br />
+            {{task.description}}
+        </div>
+        {% endfor %}
+    </div>
 </div>
-<div>
-<h1>Completed Tasks</h1>
-
-{% for task in completed_tasks %}
-{{forloop.counter}} . {{task}}<br />
-{% endfor %}
-</div>
-

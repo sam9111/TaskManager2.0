@@ -19,12 +19,13 @@
     {% for task in tasks %}
 
     <div>
-        {{task.id}}.{{task.title}}
-        {{task.created_date}}
+        {{task.id}} . {{task.title}} - {{task.created_date}}
+        <a href="/complete_task/{{task.id}}/">Complete</a>
+        <a href="/delete-task/{{task.id}}/">Delete</a></br>
         <br />
         {{task.description}}
+
     </div>
+
+    {% endfor %}
 </div>
-<a href="/complete_task/{{task.id}}/">Complete</a>
-<a href="/delete-task/{{task.id}}/">Delete</a></br>
-{% endfor %}
