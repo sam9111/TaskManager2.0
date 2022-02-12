@@ -1,5 +1,23 @@
-<form method="post" action="">
-    {{form.as_p}}
-    {% csrf_token %}
-    <button type="submit">Login</button>
-</form>
+{% extends "base.html" %}
+{% block content %}
+<div class="space-y-10">
+    <h1 class="text-4xl font-bold my-20">Todo Manager</h1>
+    <h2 class="text-2xl font-medium ">Login</h2>
+    <form method="post" action="" class="">
+        {% csrf_token %}
+
+        {% for field in form %}
+        <div class="flex flex-col my-4 space-y-2">
+            <label for="{{ field.id_for_label}}" class="text-lg ">
+                {{field.label}}
+            </label>
+            <input type="text" class="rounded-lg bg-slate-100 border-none " name="{{field.html_name}}" required>
+        </div>
+        {% endfor %}
+
+        <button type="submit"
+            class="rounded-lg bg-violet-500 w-full p-4 my-4 text-white font-medium text-lg">Login</button>
+
+    </form>
+</div>
+{% endblock %}
