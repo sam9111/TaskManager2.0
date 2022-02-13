@@ -37,6 +37,54 @@ class UserLoginView(LoginView):
 #     request.session["total_views"] = total_views + 1
 #     return HttpResponse(f"total views: {total_views} {request.user.is_authenticated}")
 
+
+# list of tasks
+class GenericAllTaskView(LoginRequiredMixin, ListView):
+    template_name = "all_tasks.html"
+    context_object_name = "tasks"
+    paginate_by = 5
+
+    def get_queryset(self):
+
+        search_term = self.request.GET.get("search")
+        tasks = Task.objects.filter(deleted=False, user=self.request.user)
+        if search_term:
+            tasks = tasks.filter(title__icontains=search_term)
+        return tasks
+
+
+class GenericCompletedTaskView(LoginRequiredMixin, ListView):
+    template_name = "completed_tasks.html"
+    context_object_name = "tasks"
+    paginate_by = 5
+
+    def get_queryset(self):
+
+        search_term = self.request.GET.get("search")
+        tasks = Task.objects.filter(deleted=False, user=self.request.user).filter(
+            completed=False
+        )
+        if search_term:
+            tasks = tasks.filter(title__icontains=search_term)
+        return tasks
+
+
+class GenericPendingTaskView(LoginRequiredMixin, ListView):
+    template_name = "tasks.html"
+    context_object_name = "tasks"
+    paginate_by = 5
+
+    def get_queryset(self):
+
+        search_term = self.request.GET.get("search")
+        tasks = Task.objects.filter(deleted=False, user=self.request.user).filter(
+            completed=False
+        )
+        if search_term:
+            tasks = tasks.filter(title__icontains=search_term)
+        return tasks
+
+
 # creating task
 class TaskCreateForm(ModelForm):
     def clean_title(self):
@@ -69,22 +117,6 @@ class GenericTaskUpdateView(UpdateView):
     form_class = TaskCreateForm
     template_name = "task_update.html"
     success_url = "/tasks"
-
-
-# list of tasks
-class GenericTaskView(LoginRequiredMixin, ListView):
-    template_name = "tasks.html"
-    context_object_name = "tasks"
-    paginate_by = 2
-
-    def get_queryset(self):
-        search_term = self.request.GET.get("search")
-        tasks = Task.objects.filter(deleted=False, user=self.request.user).filter(
-            completed=False
-        )
-        if search_term:
-            tasks = tasks.filter(title__icontains=search_term)
-        return tasks
 
 
 # one task view

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-10 flex flex-col">
+    <div class="flex items-center mt-20 ">
+        <h1 class="grow text-2xl font-bold ">Hi {{user.username.capitalize}}!</h1>
+        <a href="/user/logout/" class="text-lg text-violet-500 flex-end">Logout</a>
+    </div>
+
+    <form method="get" action="">
+        <input type="text" name="search" class="rounded-lg bg-slate-200 border-none " />
+        <button type="submit" class=" "><i class="fa fa-search text-gray-500 z-20 hover:text-black"></i></button>
+    </form>
+
+
+    {% block page %}
+    {% endblock %}
+    <a href="/create-task/" class="text-lg bg-violet-500 p-2 rounded-lg text-white w-full  text-center">Add Task</a>
+    <nav class="border-t border-gray-200 px-4 flex items-center justify-center ">
+        <div class="hidden md:-mt-px md:flex">
+            {% for page in paginator.page_range %}
+
+            <a href="?page={{page}}&search={{request.GET.search}}"
+                class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium">
+                {{page}}
+            </a>
+
+            {% endfor %}
+        </div>
+    </nav>
+</div>
+{% endblock %}

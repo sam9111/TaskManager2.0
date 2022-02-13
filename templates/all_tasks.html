@@ -1,25 +1,36 @@
-<a href="/tasks/">Back to Tasks</a>
-<div>
-    <div>
-        <h2>Pending Tasks</h2>
-        {% for task in tasks %}
+{% extends "dashboard.html" %}
 
-        <div>
-            {{task.id}} . {{task.title}} - {{task.created_date}}
-            <br />
-            {{task.description}}
-        </div>
-        {% endfor %}
-    </div>
-    <div>
-        <h1>Completed Tasks</h1>
-        {% for task in completed_tasks %}
-
-        <div>
-            {{task.id}} . {{task.title}} - {{task.created_date}}
-            <br />
-            {{task.description}}
-        </div>
-        {% endfor %}
-    </div>
+{% block page %}
+<p class="text-md text-gray-500">{{tasks.count}} tasks remaining </p>
+<div class="flex   items-center justify-between ">
+    <a href="/all_tasks" class=" rounded-lg text-violet-500 font-bold bg-violet-100 px-4 py-3 text-lg">All</a>
+    <a href="/tasks"
+        class=" rounded-lg hover:bg-violet-100 hover:text-violet-500 px-4 py-3 font-medium text-lg">Pending</a>
+    <a href="/completed_tasks"
+        class=" rounded-lg hover:bg-violet-100 hover:text-violet-500 px-4 py-3 font-medium text-lg">Completed</a>
 </div>
+
+{% for task in tasks %}
+
+<div class="rounded-lg bg-slate-200 border-none p-4 flex flex-row justify-between">
+
+    <a href="/detail-task/{{task.id}}/">
+        <div>
+            <p class="text-md">{{task.title.capitalize}} </p>
+            <p class="text-sm text-gray-700">{{task.created_date|date:"D d M"}}</p>
+        </div>
+        <div class="flex items-center space-x-2">
+            <a href="/complete_task/{{task.id}}/" class="p-2 bg-violet-500 rounded-lg "><i
+                    class="fa-solid fa-check text-white text-lg"></i></a>
+
+            <a href="/update-task/{{task.id}}/" class="p-2 bg-emerald-500 rounded-lg "><i
+                    class="fa-solid fa-pen-to-square text-white text-lg"></i></a>
+            <a href="/delete-task/{{task.id}}/" class="p-2 bg-red-500 rounded-lg "><i
+                    class="fa-solid fa-trash text-white text-lg"></i></a>
+        </div>
+    </a>
+</div>
+
+{% endfor %}
+
+{% endblock %}
