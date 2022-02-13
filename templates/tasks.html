@@ -1,31 +1,43 @@
-<a href="/completed_tasks/">Completed Tasks</a>
-<br />
-<a href="/all_tasks/">All Tasks</a>
+{% extends "dashboard.html" %}
 
-<h1>Tasks Manager</h1>
+{% block page %}
+<p class="text-md text-gray-500">{{tasks.count}} tasks pending </p>
 
-<form method="get" action="/add-task/">
-    <input type="text" name="task" />
-    <button type="submit">Add Task</button>
-</form>
+{% for task in tasks %}
 
-<form method="get" action="">
-    <input type="text" name="search" />
-    <button type="submit">Search</button>
-</form>
+<div class="rounded-lg bg-slate-200 border-none p-4 flex flex-row justify-between ">
 
-<div>
-    <h2>Pending Tasks</h2>
-    {% for task in tasks %}
 
-    <div>
-        {{task.id}} . {{task.title}} - {{task.created_date}}
-        <a href="/complete_task/{{task.id}}/">Complete</a>
-        <a href="/delete-task/{{task.id}}/">Delete</a></br>
-        <br />
-        {{task.description}}
+    <div class="flex flex-row items-center space-x-4">
+        <p class="text-lg bg-slate-500 px-4 text-white rounded-lg ">{{task.priority}}</p>
+
+        <div>
+            <a href="{% url 'detail' task.id %}" class="">
+
+                <p class="text-md hover:underline ">{{task.title}} </p>
+
+            </a>
+            <p class="text-sm text-gray-700">{{task.created_date|date:"D d M"}}</p>
+
+        </div>
+
 
     </div>
 
-    {% endfor %}
+    <div class="flex items-center space-x-2">
+        <a href="{% url 'complete' task.id %}" class="p-2 bg-violet-500 rounded-lg "><i
+                class="fa-solid fa-check text-white text-md"></i></a>
+
+        <a href="{% url 'update' task.id %}" class="p-2 bg-emerald-500 rounded-lg "><i
+                class="fa-solid fa-pen-to-square text-white text-md"></i></a>
+        <a href="{% url 'delete' task.id %}" class="p-2 bg-red-500 rounded-lg "><i
+                class="fa-solid fa-trash text-white text-md"></i></a>
+
+    </div>
+
+
 </div>
+
+{% endfor %}
+
+{% endblock %}

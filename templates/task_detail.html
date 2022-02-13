@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-10">
+    <h1 class="text-4xl font-bold mt-20">{{task.title}}</h1>
+    <div class=" flex flex-col my-4 space-y-2">
+        <h2 class="text-lg font-medium ">
+            Description
+        </h2>
+        <p>
+            {{ task.description }}
+        </p>
+    </div>
+    <div class="flex flex-row justify-between">
+        <div class=" flex flex-col my-4 space-y-2">
+            <h2 class="text-lg font-medium ">
+                Priority
+            </h2>
+            <p>
+                {{ task.priority }}
+            </p>
+        </div>
+        <div class=" flex flex-col my-4 space-y-2">
+            <h2 class="text-lg font-medium ">
+                Completed
+            </h2>
+            <p>
+                {{ task.completed|yesno:"Yes,No"}}
+            </p>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

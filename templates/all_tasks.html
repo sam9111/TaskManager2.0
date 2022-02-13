@@ -1,25 +1,44 @@
-<a href="/tasks/">Back to Tasks</a>
-<div>
-    <div>
-        <h2>Pending Tasks</h2>
-        {% for task in tasks %}
+{% extends "dashboard.html" %}
+
+{% block page %}
+<p class="text-md text-gray-500">{{completed_count}} of {{tasks.count}} tasks completed </p>
+
+{% for task in tasks %}
+
+<div class="rounded-lg bg-slate-200 border-none p-4 flex flex-row justify-between">
+
+    <div class="flex flex-row items-center space-x-4">
+        <p class="text-lg bg-slate-500 px-4 text-white rounded-lg ">{{task.priority}}</p>
 
         <div>
-            {{task.id}} . {{task.title}} - {{task.created_date}}
-            <br />
-            {{task.description}}
-        </div>
-        {% endfor %}
-    </div>
-    <div>
-        <h1>Completed Tasks</h1>
-        {% for task in completed_tasks %}
+            <a href="{% url 'detail' task.id %}" class="">
+                {% if task.completed %}
+                <p class="text-md line-through text-violet-500 hover:underline">{{task.title}} </p>
+                {% else %}
+                <p class="text-md hover:underline ">{{task.title}} </p>
+                {% endif %}
+            </a>
+            <p class="text-sm text-gray-700">{{task.created_date|date:"D d M"}}</p>
 
-        <div>
-            {{task.id}} . {{task.title}} - {{task.created_date}}
-            <br />
-            {{task.description}}
         </div>
-        {% endfor %}
+
     </div>
+
+    <div class="flex items-center space-x-2">
+        {% if not task.completed %}
+        <a href="{% url 'complete' task.id %}" class="p-2 bg-violet-500 rounded-lg "><i
+                class="fa-solid fa-check text-white text-md"></i></a>
+        {% endif %}
+        <a href="{% url 'update' task.id %}" class="p-2 bg-emerald-500 rounded-lg "><i
+                class="fa-solid fa-pen-to-square text-white text-md"></i></a>
+        <a href="{% url 'delete' task.id %}" class="p-2 bg-red-500 rounded-lg "><i
+                class="fa-solid fa-trash text-white text-md"></i></a>
+
+    </div>
+
+
 </div>
+
+{% endfor %}
+
+{% endblock %}
