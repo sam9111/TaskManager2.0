@@ -4,16 +4,17 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.forms import ModelForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 
 from tasks.models import Task
-from django.db import transaction
 
 
 class AuthorisedTaskManager(LoginRequiredMixin):
@@ -31,7 +32,7 @@ class AuthorisedTaskManager(LoginRequiredMixin):
 class UserCreateView(CreateView):
     form_class = UserCreationForm
     template_name = "user_create.html"
-    success_url = "/user/login"
+    success_url = reverse_lazy("login")
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -119,7 +120,7 @@ def check_priority(obj, update=False):
 class GenericTaskCreateView(AuthorisedTaskManager, CreateView):
     form_class = TaskCreateForm
     template_name = "task_create.html"
-    success_url = "/tasks"
+    success_url = reverse_lazy("home")
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -134,7 +135,7 @@ class GenericTaskUpdateView(AuthorisedTaskManager, UpdateView):
     model = Task
     form_class = TaskCreateForm
     template_name = "task_update.html"
-    success_url = "/tasks"
+    success_url = reverse_lazy("home")
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -153,9 +154,9 @@ class GenericTaskDetailView(AuthorisedTaskManager, DetailView):
 class GenericTaskDeleteView(AuthorisedTaskManager, DeleteView):
     model = Task
     template_name = "task_delete.html"
-    success_url = "/tasks"
+    success_url = reverse_lazy("home")
 
 
 def complete_task_view(request, index):
     Task.objects.filter(id=index).update(completed=True)
-    return HttpResponseRedirect("/completed_tasks/")
+    return HttpResponseRedirect(reverse("completed"))
