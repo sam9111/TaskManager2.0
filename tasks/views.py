@@ -13,6 +13,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 
 from tasks.models import Task
+from django.db import transaction
 
 
 class AuthorisedTaskManager(LoginRequiredMixin):
@@ -96,6 +97,25 @@ class TaskCreateForm(ModelForm):
         fields = ["title", "description", "priority", "completed"]
 
 
+def check_priority(obj, update=False):
+    priority = obj.priority
+    tasks = Task.objects.filter(deleted=False, user=obj.user, completed=False)
+    if update:
+        tasks = Task.objects.filter(
+            deleted=False, user=obj.user, completed=False
+        ).exclude(id=obj.id)
+
+    bulk_update_dict = {}
+
+    while (qs := tasks.filter(priority=priority)).exists():
+        task = qs[0]
+        priority += 1
+        bulk_update_dict[task.id] = priority
+    with transaction.atomic():
+        for key in bulk_update_dict:
+            Task.objects.filter(id=key).update(priority=bulk_update_dict[key])
+
+
 class GenericTaskCreateView(AuthorisedTaskManager, CreateView):
     form_class = TaskCreateForm
     template_name = "task_create.html"
@@ -104,6 +124,7 @@ class GenericTaskCreateView(AuthorisedTaskManager, CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.user = self.request.user
+        check_priority(self.object)
         self.object.save()
         return HttpResponseRedirect(self.success_url)
 
@@ -114,6 +135,12 @@ class GenericTaskUpdateView(AuthorisedTaskManager, UpdateView):
     form_class = TaskCreateForm
     template_name = "task_update.html"
     success_url = "/tasks"
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        check_priority(self.object, True)
+        self.object.save()
+        return HttpResponseRedirect(self.success_url)
 
 
 # one task view

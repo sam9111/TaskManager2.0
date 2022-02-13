@@ -3,7 +3,7 @@
 {% block content %}
 <div class="space-y-10">
     <h1 class="text-4xl font-bold mt-20">Edit Task</h1>
-    <form method="post" action="{% url 'create' %}" class="">
+    <form method="post" action="" class="">
         {% csrf_token %}
 
         {% for field in form %}

@@ -14,17 +14,3 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
-
-    def save(self, *args, **kwargs):
-        priority = self.priority
-        tasks = Task.objects.filter(deleted=False, user=self.user, completed=False)
-        bulk_update_list = []
-        while (qs := tasks.filter(priority=priority)).exists():
-            task = qs[0]
-            priority += 1
-            task_obj = Task.objects.get(id=task.id)
-            task_obj.priority = priority
-            bulk_update_list.append(task_obj)
-        if len(bulk_update_list) > 0:
-            Task.objects.bulk_update(bulk_update_list, ["priority"])
-        super(Task, self).save(*args, **kwargs)
