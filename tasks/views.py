@@ -37,19 +37,13 @@ class UserCreateView(CreateView):
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return HttpResponseRedirect("/")
-        return super(LoginView, self).get(request, *args, **kwargs)
+        return super(CreateView, self).get(request, *args, **kwargs)
 
 
 # user login
 class UserLoginView(LoginView):
     template_name = "user_login.html"
     redirect_authenticated_user = True
-
-
-# def session_storage_view(request):
-#     total_views = request.session.get("total_views", 0)
-#     request.session["total_views"] = total_views + 1
-#     return HttpResponse(f"total views: {total_views} {request.user.is_authenticated}")
 
 
 # list of tasks
