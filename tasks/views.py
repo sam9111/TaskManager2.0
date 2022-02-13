@@ -52,6 +52,13 @@ class GenericAllTaskView(LoginRequiredMixin, ListView):
             tasks = tasks.filter(title__icontains=search_term)
         return tasks
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["completed_count"] = Task.objects.filter(
+            deleted=False, user=self.request.user, completed=True
+        ).count()
+        return context
+
 
 class GenericCompletedTaskView(LoginRequiredMixin, ListView):
     template_name = "completed_tasks.html"
@@ -62,7 +69,7 @@ class GenericCompletedTaskView(LoginRequiredMixin, ListView):
 
         search_term = self.request.GET.get("search")
         tasks = Task.objects.filter(deleted=False, user=self.request.user).filter(
-            completed=False
+            completed=True
         )
         if search_term:
             tasks = tasks.filter(title__icontains=search_term)
