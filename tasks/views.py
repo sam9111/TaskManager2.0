@@ -147,11 +147,3 @@ class GenericTaskDeleteView(AuthorisedTaskManager, DeleteView):
 # def completed_tasks_view(request):
 #     completed_tasks = Task.objects.filter(deleted=False).filter(completed=True)
 #     return render(request, "completed_tasks.html", {"completed_tasks": completed_tasks})
-
-
-# def all_tasks_view(request):
-#     tasks = Task.objects.filter(deleted=False).filter(completed=False)
-#     completed_tasks = Task.objects.filter(deleted=False).filter(completed=True)
-#     return render(
-#         request, "all_tasks.html", {"tasks": tasks, "completed_tasks": completed_tasks}
-#     )
