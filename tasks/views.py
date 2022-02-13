@@ -19,7 +19,7 @@ class AuthorisedTaskManager(LoginRequiredMixin):
     def get_queryset(self):
         search_term = self.request.GET.get("search")
         tasks = Task.objects.filter(deleted=False, user=self.request.user).order_by(
-            "priority"
+            "priority", "-created_date"
         )
         if search_term:
             tasks = tasks.filter(title__icontains=search_term)
@@ -32,10 +32,16 @@ class UserCreateView(CreateView):
     template_name = "user_create.html"
     success_url = "/user/login"
 
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return HttpResponseRedirect("/")
+        return super(LoginView, self).get(request, *args, **kwargs)
+
 
 # user login
 class UserLoginView(LoginView):
     template_name = "user_login.html"
+    redirect_authenticated_user = True
 
 
 # def session_storage_view(request):
@@ -90,20 +96,20 @@ class TaskCreateForm(ModelForm):
         fields = ["title", "description", "priority", "completed"]
 
 
-class GenericTaskCreateView(LoginRequiredMixin, CreateView):
+class GenericTaskCreateView(AuthorisedTaskManager, CreateView):
     form_class = TaskCreateForm
     template_name = "task_create.html"
     success_url = "/tasks"
 
     def form_valid(self, form):
-        self.object = form.save()
+        self.object = form.save(commit=False)
         self.object.user = self.request.user
         self.object.save()
         return HttpResponseRedirect(self.success_url)
 
 
 # update a task
-class GenericTaskUpdateView(LoginRequiredMixin, UpdateView):
+class GenericTaskUpdateView(AuthorisedTaskManager, UpdateView):
     model = Task
     form_class = TaskCreateForm
     template_name = "task_update.html"
@@ -111,13 +117,13 @@ class GenericTaskUpdateView(LoginRequiredMixin, UpdateView):
 
 
 # one task view
-class GenericTaskDetailView(LoginRequiredMixin, DetailView):
+class GenericTaskDetailView(AuthorisedTaskManager, DetailView):
     model = Task
     template_name = "task_detail.html"
 
 
 # delete a task
-class GenericTaskDeleteView(LoginRequiredMixin, DeleteView):
+class GenericTaskDeleteView(AuthorisedTaskManager, DeleteView):
     model = Task
     template_name = "task_delete.html"
     success_url = "/tasks"

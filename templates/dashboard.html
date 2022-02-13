@@ -23,7 +23,7 @@
         {% endif %}
 
         {% url 'pending' as pending_url %}
-        {% if request.path == pending_url %}
+        {% if request.path == pending_url or request.path == "/" %}
         <a href="{% url 'pending' %}"
             class=" rounded-lg text-violet-500 font-bold bg-violet-100 px-10 py-3 text-lg">Pending</a>
         {% else %}

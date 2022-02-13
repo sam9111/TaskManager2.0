@@ -7,7 +7,8 @@
 
 <div class="rounded-lg bg-slate-200 border-none p-4 flex flex-row justify-between">
 
-    <div class="flex flex-row items-center">
+    <div class="flex flex-row items-center space-x-4">
+        <p class="text-lg bg-slate-500 px-4 text-white rounded-lg ">{{task.priority}}</p>
 
         <div>
             <a href="{% url 'detail' task.id %}" class="">
@@ -20,7 +21,6 @@
             <p class="text-sm text-gray-700">{{task.created_date|date:"D d M"}}</p>
 
         </div>
-        <p class="text-lg bg-slate-500 px-4 text-white rounded-lg mx-8">{{task.priority}}</p>
 
     </div>
 
