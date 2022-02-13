@@ -15,9 +15,9 @@ from django.views.generic.list import ListView
 from tasks.models import Task
 
 
-class AuthorisedTaskManager(LoginRequiredMixin):
-    def get_queryset(self):
-        return Task.objects.filter(deleted=False, user=self.request.user)
+# class AuthorisedTaskManager(LoginRequiredMixin):
+#     def get_queryset(self):
+#         return Task.objects.filter(deleted=False, user=self.request.user)
 
 
 # user signup
@@ -84,8 +84,10 @@ class GenericPendingTaskView(LoginRequiredMixin, ListView):
     def get_queryset(self):
 
         search_term = self.request.GET.get("search")
-        tasks = Task.objects.filter(deleted=False, user=self.request.user).filter(
-            completed=False
+        tasks = (
+            Task.objects.filter(deleted=False, user=self.request.user)
+            .filter(completed=False)
+            .order_by("priority")
         )
         if search_term:
             tasks = tasks.filter(title__icontains=search_term)
@@ -96,17 +98,17 @@ class GenericPendingTaskView(LoginRequiredMixin, ListView):
 class TaskCreateForm(ModelForm):
     def clean_title(self):
         title = self.cleaned_data["title"]
-        if len(title) < 10:
-            raise ValidationError("Data too small")
-        return title.upper()
+        if len(title) < 5:
+            raise ValidationError("Title too small")
+        return title.capitalize()
 
     class Meta:
 
         model = Task
-        fields = ["title", "description", "completed"]
+        fields = ["title", "description", "priority", "completed"]
 
 
-class GenericTaskCreateView(CreateView):
+class GenericTaskCreateView(LoginRequiredMixin, CreateView):
     form_class = TaskCreateForm
     template_name = "task_create.html"
     success_url = "/tasks"
@@ -119,7 +121,7 @@ class GenericTaskCreateView(CreateView):
 
 
 # update a task
-class GenericTaskUpdateView(UpdateView):
+class GenericTaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
     form_class = TaskCreateForm
     template_name = "task_update.html"
@@ -127,23 +129,18 @@ class GenericTaskUpdateView(UpdateView):
 
 
 # one task view
-class GenericTaskDetailView(DetailView):
+class GenericTaskDetailView(LoginRequiredMixin, DetailView):
     model = Task
     template_name = "task_detail.html"
 
 
 # delete a task
-class GenericTaskDeleteView(AuthorisedTaskManager, DeleteView):
+class GenericTaskDeleteView(LoginRequiredMixin, DeleteView):
     model = Task
     template_name = "task_delete.html"
     success_url = "/tasks"
 
 
-# def complete_task_view(request, index):
-#     Task.objects.filter(id=index).update(completed=True)
-#     return HttpResponseRedirect("/completed_tasks/")
-
-
-# def completed_tasks_view(request):
-#     completed_tasks = Task.objects.filter(deleted=False).filter(completed=True)
-#     return render(request, "completed_tasks.html", {"completed_tasks": completed_tasks})
+def complete_task_view(request, index):
+    Task.objects.filter(id=index).update(completed=True)
+    return HttpResponseRedirect("/completed_tasks/")

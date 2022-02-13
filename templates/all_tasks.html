@@ -18,9 +18,9 @@
     <div>
         <a href="/detail-task/{{task.id}}/" class="">
             {% if task.completed %}
-            <p class="text-md line-through text-violet-500 hover:underline">{{task.title.capitalize}} </p>
+            <p class="text-md line-through text-violet-500 hover:underline">{{task.title}} </p>
             {% else %}
-            <p class="text-md hover:underline ">{{task.title.capitalize}} </p>
+            <p class="text-md hover:underline ">{{task.title}} </p>
             {% endif %}
         </a>
         <p class="text-sm text-gray-700">{{task.created_date|date:"D d M"}}</p>

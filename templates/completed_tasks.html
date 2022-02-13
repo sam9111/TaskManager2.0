@@ -17,17 +17,17 @@
 
     <a href="/detail-task/{{task.id}}/">
         <div>
-            <p class="text-md line-through text-violet-500 hover:underline">{{task.title.capitalize}} </p>
+            <p class="text-md line-through text-violet-500 hover:underline">{{task.title}} </p>
             <p class="text-sm text-gray-700">{{task.created_date|date:"D d M"}}</p>
         </div>
         <div class="flex items-center space-x-2">
             <a href="/complete_task/{{task.id}}/" class="p-2 bg-violet-500 rounded-lg "><i
-                    class="fa-solid fa-check text-white text-lg"></i></a>
+                    class="fa-solid fa-check text-white text-md"></i></a>
 
             <a href="/update-task/{{task.id}}/" class="p-2 bg-emerald-500 rounded-lg "><i
-                    class="fa-solid fa-pen-to-square text-white text-lg"></i></a>
+                    class="fa-solid fa-pen-to-square text-white text-md"></i></a>
             <a href="/delete-task/{{task.id}}/" class="p-2 bg-red-500 rounded-lg "><i
-                    class="fa-solid fa-trash text-white text-lg"></i></a>
+                    class="fa-solid fa-trash text-white text-md"></i></a>
         </div>
     </a>
 </div>
