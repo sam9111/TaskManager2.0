@@ -3,8 +3,8 @@
 {% block content %}
 <div class="space-y-10 flex flex-col">
     <div class="flex items-center mt-20 ">
-        <h1 class="grow text-2xl font-bold ">Hi {{user.username.capitalize}}!</h1>
-        <a href="/user/logout/" class="text-lg text-violet-500 flex-end">Logout</a>
+        <h1 class="grow text-4xl font-bold ">Hi {{user.username.capitalize}}!</h1>
+        <a href="{% url 'logout' %}" class="text-lg text-violet-500 flex-end">Logout</a>
     </div>
 
     <form method="get" action="">
@@ -12,10 +12,40 @@
         <button type="submit" class=" "><i class="fa fa-search text-gray-500 z-20 hover:text-black"></i></button>
     </form>
 
+    <div class="flex  items-center justify-between ">
+
+        {% url 'all' as all_url %}
+        {% if request.path == all_url %}
+        <a href="{% url 'all' %}" class=" rounded-lg text-violet-500 font-bold bg-violet-100 px-10 py-3 text-lg">All</a>
+        {% else %}
+        <a href="{% url 'all' %}"
+            class=" rounded-lg hover:bg-violet-100 hover:text-violet-500 px-10 py-3 font-medium text-lg">All</a>
+        {% endif %}
+
+        {% url 'pending' as pending_url %}
+        {% if request.path == pending_url %}
+        <a href="{% url 'pending' %}"
+            class=" rounded-lg text-violet-500 font-bold bg-violet-100 px-10 py-3 text-lg">Pending</a>
+        {% else %}
+        <a href="{% url 'pending' %}"
+            class=" rounded-lg hover:bg-violet-100 hover:text-violet-500 px-10 py-3 font-medium text-lg">Pending</a>
+        {% endif %}
+
+        {% url 'completed' as completed_url %}
+        {% if request.path == completed_url %}
+        <a href="{% url 'completed' %}"
+            class=" rounded-lg text-violet-500 font-bold bg-violet-100 px-10 py-3 text-lg">Completed</a>
+        {% else %}
+        <a href="{% url 'completed' %}"
+            class=" rounded-lg hover:bg-violet-100 hover:text-violet-500 px-10 py-3 font-medium text-lg">Completed</a>
+        {% endif %}
+
+    </div>
 
     {% block page %}
     {% endblock %}
-    <a href="/create-task/" class="text-lg bg-violet-500 p-2 rounded-lg text-white w-full  text-center">Add Task</a>
+    <a href="{% url 'create' %}" class="text-lg bg-violet-500 p-4 rounded-lg text-white w-full  text-center">Add
+        Task</a>
     <nav class="border-t border-gray-200 px-4 flex items-center justify-center ">
         <div class="hidden md:-mt-px md:flex">
             {% for page in paginator.page_range %}

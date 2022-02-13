@@ -15,9 +15,15 @@ from django.views.generic.list import ListView
 from tasks.models import Task
 
 
-# class AuthorisedTaskManager(LoginRequiredMixin):
-#     def get_queryset(self):
-#         return Task.objects.filter(deleted=False, user=self.request.user)
+class AuthorisedTaskManager(LoginRequiredMixin):
+    def get_queryset(self):
+        search_term = self.request.GET.get("search")
+        tasks = Task.objects.filter(deleted=False, user=self.request.user).order_by(
+            "priority"
+        )
+        if search_term:
+            tasks = tasks.filter(title__icontains=search_term)
+        return tasks
 
 
 # user signup
@@ -39,59 +45,35 @@ class UserLoginView(LoginView):
 
 
 # list of tasks
-class GenericAllTaskView(LoginRequiredMixin, ListView):
+class GenericAllTaskView(AuthorisedTaskManager, ListView):
     template_name = "all_tasks.html"
     context_object_name = "tasks"
-    paginate_by = 5
-
-    def get_queryset(self):
-
-        search_term = self.request.GET.get("search")
-        tasks = Task.objects.filter(deleted=False, user=self.request.user)
-        if search_term:
-            tasks = tasks.filter(title__icontains=search_term)
-        return tasks
+    paginate_by = 10
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["completed_count"] = Task.objects.filter(
-            deleted=False, user=self.request.user, completed=True
-        ).count()
+        context["completed_count"] = (
+            super().get_queryset().filter(completed=True).count()
+        )
         return context
 
 
-class GenericCompletedTaskView(LoginRequiredMixin, ListView):
+class GenericCompletedTaskView(AuthorisedTaskManager, ListView):
     template_name = "completed_tasks.html"
     context_object_name = "tasks"
-    paginate_by = 5
+    paginate_by = 10
 
     def get_queryset(self):
-
-        search_term = self.request.GET.get("search")
-        tasks = Task.objects.filter(deleted=False, user=self.request.user).filter(
-            completed=True
-        )
-        if search_term:
-            tasks = tasks.filter(title__icontains=search_term)
-        return tasks
+        return super().get_queryset().filter(completed=True)
 
 
-class GenericPendingTaskView(LoginRequiredMixin, ListView):
+class GenericPendingTaskView(AuthorisedTaskManager, ListView):
     template_name = "tasks.html"
     context_object_name = "tasks"
-    paginate_by = 5
+    paginate_by = 10
 
     def get_queryset(self):
-
-        search_term = self.request.GET.get("search")
-        tasks = (
-            Task.objects.filter(deleted=False, user=self.request.user)
-            .filter(completed=False)
-            .order_by("priority")
-        )
-        if search_term:
-            tasks = tasks.filter(title__icontains=search_term)
-        return tasks
+        return super().get_queryset().filter(completed=False)
 
 
 # creating task
@@ -99,7 +81,7 @@ class TaskCreateForm(ModelForm):
     def clean_title(self):
         title = self.cleaned_data["title"]
         if len(title) < 5:
-            raise ValidationError("Title too small")
+            raise ValidationError("Title too small!")
         return title.capitalize()
 
     class Meta:

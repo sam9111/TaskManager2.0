@@ -2,33 +2,39 @@
 
 {% block page %}
 <p class="text-md text-gray-500">{{tasks.count}} tasks pending </p>
-<div class="flex   items-center justify-between ">
-    <a href="/all_tasks"
-        class=" rounded-lg hover:bg-violet-100 hover:text-violet-500 px-4 py-3 font-medium text-lg">All</a>
-    <a href="/tasks" class=" rounded-lg text-violet-500 font-bold bg-violet-100 px-4 py-3 text-lg">Pending</a>
-    <a href="/completed_tasks"
-        class=" rounded-lg hover:bg-violet-100 hover:text-violet-500 px-4 py-3 font-medium text-lg">Completed</a>
-</div>
 
 {% for task in tasks %}
 
-<div class="rounded-lg bg-slate-200 border-none p-4 flex flex-row justify-between items-center ">
-    <p class="text-lg bg-slate-500 px-4 text-white rounded-lg">{{task.priority}}</p>
-    <a href="/detail-task/{{task.id}}/">
+<div class="rounded-lg bg-slate-200 border-none p-4 flex flex-row justify-between ">
 
+
+    <div class="flex flex-row items-center">
         <div>
-            <p class="text-md hover:underline hover:text-violet-500">{{task.title}} </p>
+            <a href="{% url 'detail' task.id %}" class="">
+
+                <p class="text-md hover:underline ">{{task.title}} </p>
+
+            </a>
             <p class="text-sm text-gray-700">{{task.created_date|date:"D d M"}}</p>
+
         </div>
-        <div class="flex space-x-2">
-            <a href="/complete_task/{{task.id}}/" class="p-2 bg-violet-500 rounded-lg "><i
-                    class="fa-solid fa-check text-white text-md"></i></a>
-            <a href="/update-task/{{task.id}}/" class="p-2 bg-emerald-500 rounded-lg "><i
-                    class="fa-solid fa-pen-to-square text-white text-md"></i></a>
-            <a href="/delete-task/{{task.id}}/" class="p-2 bg-red-500 rounded-lg "><i
-                    class="fa-solid fa-trash text-white text-md"></i></a>
-        </div>
-    </a>
+
+        <p class="text-lg bg-slate-500 px-4 text-white rounded-lg mx-8">{{task.priority}}</p>
+
+    </div>
+
+    <div class="flex items-center space-x-2">
+        <a href="{% url 'completed' task.id %}" class="p-2 bg-violet-500 rounded-lg "><i
+                class="fa-solid fa-check text-white text-md"></i></a>
+
+        <a href="{% url 'update' task.id %}" class="p-2 bg-emerald-500 rounded-lg "><i
+                class="fa-solid fa-pen-to-square text-white text-md"></i></a>
+        <a href="{% url 'delete' task.id %}" class="p-2 bg-red-500 rounded-lg "><i
+                class="fa-solid fa-trash text-white text-md"></i></a>
+
+    </div>
+
+
 </div>
 
 {% endfor %}
