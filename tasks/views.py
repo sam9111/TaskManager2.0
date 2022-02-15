@@ -119,7 +119,8 @@ class GenericTaskCreateView(AuthorisedTaskManager, CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.user = self.request.user
-        check_priority(self.object)
+        if "priority" in form.changed_data():
+            check_priority(self.object)
         self.object.save()
         return HttpResponseRedirect(self.success_url)
 
