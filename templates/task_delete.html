@@ -1,6 +1,16 @@
-<form method="post">
-    {% csrf_token %}
-    <p>Are you sure you want to delete {{object.id}}?</p>
-    <input type="submit" value="Confirm" />
+{% extends "base.html" %}
 
-</form>
+{% block content %}
+<div class="space-y-10">
+    <h1 class="text-4xl font-bold mt-20">Delete Task</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <p class="text-lg ">Are you sure you want to delete task {{object.id}}?</p>
+        <button type="submit"
+            class="rounded-lg bg-violet-500  w-full p-4 my-8 text-white font-medium text-lg">Delete</button>
+
+    </form>
+
+</div>
+{% endblock %}

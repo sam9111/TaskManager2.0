@@ -50,7 +50,7 @@ class UserLoginView(LoginView):
 class GenericAllTaskView(AuthorisedTaskManager, ListView):
     template_name = "all_tasks.html"
     context_object_name = "tasks"
-    paginate_by = 10
+    paginate_by = 5
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -63,7 +63,7 @@ class GenericAllTaskView(AuthorisedTaskManager, ListView):
 class GenericCompletedTaskView(AuthorisedTaskManager, ListView):
     template_name = "completed_tasks.html"
     context_object_name = "tasks"
-    paginate_by = 10
+    paginate_by = 5
 
     def get_queryset(self):
         return super().get_queryset().filter(completed=True)
@@ -72,7 +72,7 @@ class GenericCompletedTaskView(AuthorisedTaskManager, ListView):
 class GenericPendingTaskView(AuthorisedTaskManager, ListView):
     template_name = "tasks.html"
     context_object_name = "tasks"
-    paginate_by = 10
+    paginate_by = 5
 
     def get_queryset(self):
         return super().get_queryset().filter(completed=False)
