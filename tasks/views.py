@@ -96,19 +96,15 @@ def check_priority(obj, update=False):
     priority = obj.priority
     tasks = Task.objects.filter(deleted=False, user=obj.user, completed=False)
     if update:
-        tasks = Task.objects.filter(
-            deleted=False, user=obj.user, completed=False
-        ).exclude(id=obj.id)
+        tasks = tasks.exclude(id=obj.id)
 
-    bulk_update_dict = {}
-
-    while (qs := tasks.filter(priority=priority)).exists():
-        task = qs[0]
+    objs = []
+    while task := tasks.filter(priority=priority).first():
         priority += 1
-        bulk_update_dict[task.id] = priority
-    with transaction.atomic():
-        for key in bulk_update_dict:
-            Task.objects.filter(id=key).update(priority=bulk_update_dict[key])
+        task.priority = priority
+        objs.append(task)
+
+    Task.objects.bulk_update(objs, ["priority"])
 
 
 class GenericTaskCreateView(AuthorisedTaskManager, CreateView):
@@ -119,6 +115,7 @@ class GenericTaskCreateView(AuthorisedTaskManager, CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.user = self.request.user
+        check_priority(self.object)
         self.object.save()
         return HttpResponseRedirect(self.success_url)
 
@@ -133,7 +130,6 @@ class GenericTaskUpdateView(AuthorisedTaskManager, UpdateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         if "priority" in form.changed_data:
-            print(True)
             check_priority(self.object, True)
         self.object.save()
         return HttpResponseRedirect(self.success_url)
