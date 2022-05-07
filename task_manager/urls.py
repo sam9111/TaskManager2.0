@@ -5,7 +5,18 @@ from tasks.views import *
 
 from django.contrib.auth.views import LogoutView
 
+from tasks.apiviews import TaskListAPI
+
+from rest_framework.routers import SimpleRouter
+
+from tasks.apiviews import TaskViewSet
+
+router = SimpleRouter()
+
+router.register("api/task", TaskViewSet)
+
 urlpatterns = [
+    path("taskapi/", TaskListAPI.as_view()),
     path("", GenericPendingTaskView.as_view(), name="home"),
     path("admin/", admin.site.urls),
     path("tasks/", GenericPendingTaskView.as_view(), name="pending"),
@@ -20,4 +31,4 @@ urlpatterns = [
     path("user/login/", UserLoginView.as_view(), name="login"),
     path("user/logout/", LogoutView.as_view(), name="logout"),
     path("__reload__/", include("django_browser_reload.urls")),
-]
+] + router.urls

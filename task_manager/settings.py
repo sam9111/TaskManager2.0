@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     "theme",
     "django_browser_reload",
     "fontawesomefree",
+    "rest_framework",
+    "django_filters",
 ]
 
 MIDDLEWARE = [

@@ -89,7 +89,7 @@ class TaskCreateForm(ModelForm):
     class Meta:
 
         model = Task
-        fields = ["title", "description", "priority", "completed"]
+        fields = ["title", "description", "priority", "status"]
 
 
 def check_priority(obj, update=False):
